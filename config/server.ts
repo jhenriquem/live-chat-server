@@ -1,6 +1,7 @@
 import e, { Application } from "express"
 import { createServer } from "http"
 import "dotenv/config"
+import ConnectDataBase from "./database"
 
 // Estrututa do servidor 
 export default class Server {
@@ -17,8 +18,9 @@ export default class Server {
     this.port = process.env.PORT || 3000
   }
 
-  onlineServer() {
+  async onlineServer() {
     try {
+      await ConnectDataBase()
       this.server.listen(this.port, () => {
         console.log(`Application running on port ${this.port}`);
       });

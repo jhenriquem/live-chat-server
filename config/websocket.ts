@@ -1,24 +1,21 @@
 import { Server } from "http";
 import { WebSocket, WebSocketServer } from "ws";
+import messagesInterface from "../types/messagesType"
+import messageModel from "../models/messagesModel";
 
 export default class WebSocketHandler {
 
   private wsServer: WebSocketServer;
-  public clientCount: number
 
   constructor(server: Server) {
     this.wsServer = new WebSocketServer({ server })
-    this.clientCount = 0
 
     this.setupConnection()
   }
 
   private setupConnection() {
     this.wsServer.on("connection", (crrClient) => {
-      // Indicar que houve uma nova conexão e altera o contador de clientes conectados
-      console.log("Novo cliente conectado");
-      this.clientCount++
-      console.log(`${this.clientCount} clientes conectados`)
+
 
       // Mandar as mensagens para o client que se conectou 
       this.handleSendMessagesToClient(crrClient)
@@ -26,9 +23,6 @@ export default class WebSocketHandler {
       // Quando o client mandar algo para o servidor 
       this.handleClientMessage(crrClient)
 
-
-      // Atualizar o contador quando o client desconectar 
-      crrClient.on("close", () => this.clientCount--)
     })
   }
 
@@ -44,15 +38,26 @@ export default class WebSocketHandler {
 
   }
 
-  private handleSendMessagesToClient(wsClient: WebSocket) {
+  private async handleSendMessagesToClient(wsClient: WebSocket) {
     //Envia as mensagens para o cliente que se conectou 
     if (wsClient.readyState === WebSocket.OPEN) {
-      wsClient.send("...")
+      try {
+        const messagesList: messagesInterface[] = await messageModel.find()
+
+        wsClient.send(JSON.stringify({ list: messagesList }))
+      }
+      catch (err: any) {
+        wsClient.send(JSON.stringify({
+          status: "Error",
+          message: err.message
+        }))
+        console.log(`Error sending messages to client => ${err.message}`)
+      }
     }
   }
 
   public start() {
-    console.log("Websocket server ativo ")
+    console.log("Active websocket server")
   }
 
 }
