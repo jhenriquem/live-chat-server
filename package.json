@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch ./app.ts",
     "build": "tsc",
-    "deploy": "ci && build",
+    "deploy": "npm install && npm run build",
     "start": "node ./api/app.js"
   },
   "keywords": [],
