@@ -1,4 +1,5 @@
 <h1 align="center"> 🌐 Live chat Server </h1>
+<img src="./project_img.png"/>
 
 ##### :point_right: [Projeto ao vivo ](https://jhenriquem.github.io/live-chat-client/) 
 ##### :point_right: [Client side](https://github.com/jhenriquem/live-chat-client)
